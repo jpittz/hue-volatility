@@ -1,6 +1,5 @@
 import yfinance as yf
 import time
-from decimal import *
 
 def volatility(symbol):
     # loop and update prices
@@ -8,7 +7,6 @@ def volatility(symbol):
     prices = [getPrice(symbol)]
 
     for i in range(1,10):
-
         # get and store latest price
         prices.append(getPrice(symbol))
         # print latest price as string for price format
@@ -23,8 +21,6 @@ def priceChange(prices, i):
         return ("-")
     elif prices[i] == prices[i - 1]:
         return ("=")
-    else:
-        return ("ERROR")
 
 def getPrice(symbol):
     # get new market data to update price
@@ -36,16 +32,14 @@ def getPrice(symbol):
 def main():
     print("\nHue Volatility\n\n//////////////\n")
 
-    # set stock ticker to use
-    symbol = "NVDA"
-
-    # get data for stock
-    stock = yf.Ticker(symbol).info
+    symbol = "NVDA" # set stock ticker to use
+    stock = yf.Ticker(symbol).info # get data for stock
 
     # output company name and ticker
     print("Ticker : ", stock['symbol'])
     print("Company : ", stock['shortName'], end = '\n\n\n')
 
+    # run volatility function
     volatility(symbol)
 
 # run code
