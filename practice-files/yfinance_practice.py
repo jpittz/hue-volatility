@@ -1,11 +1,11 @@
-import yfinance as stock
+import yfinance as yf
 import time
 
 # first attempt at using yfinance
 print("yfinance practice\n")
 
 # get data for Apple
-apple = stock.Ticker("AAPL").info
+apple = yf.Ticker("AAPL").info
 
 # display Company Sector
 print("Company Sector : ", apple['sector'])
@@ -17,7 +17,7 @@ print("Current Price : ", apple['currentPrice'])
 time.sleep(10)
 
 # get new market data to update price
-apple = stock.Ticker("AAPL").info
+apple = yf.Ticker("AAPL").info
 
 # display Current Price
 price = "{:.2f}".format(round(apple['currentPrice'], 2))

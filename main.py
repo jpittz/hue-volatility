@@ -1,16 +1,16 @@
-import yfinance as stock
+import yfinance as yf
 import time
 from decimal import *
 
-def volatility():
+def volatility(symbol):
     # loop and update prices
     print("Live Prices\n-----------\n")
-    prices = [getPrice()]
+    prices = [getPrice(symbol)]
 
     for i in range(1,10):
 
         # get and store latest price
-        prices.append(getPrice())
+        prices.append(getPrice(symbol))
         # print latest price as string for price format
         print("\nPrice : ", str("{:.2f}".format(prices[i])))
         print("Change : ", priceChange(prices, i)) # print direction of change
@@ -26,24 +26,27 @@ def priceChange(prices, i):
     else:
         return ("ERROR")
 
-def getPrice():
+def getPrice(symbol):
     # get new market data to update price
-    apple = stock.Ticker("AAPL").info
+    stock = yf.Ticker(symbol).info
 
     # return current price rounded to 2dp
-    return round(apple['currentPrice'], 2)
+    return round(stock['currentPrice'], 2)
 
 def main():
     print("\nHue Volatility\n\n//////////////\n")
 
+    # set stock ticker to use
+    symbol = "NVDA"
+
     # get data for stock
-    apple = stock.Ticker("AAPL").info
+    stock = yf.Ticker(symbol).info
 
     # output company name and ticker
-    print("Ticker : ", apple['symbol'])
-    print("Company : ", apple['shortName'], end = '\n\n\n')
+    print("Ticker : ", stock['symbol'])
+    print("Company : ", stock['shortName'], end = '\n\n\n')
 
-    volatility()
+    volatility(symbol)
 
 # run code
 main()
