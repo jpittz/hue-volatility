@@ -1,10 +1,13 @@
 from phue import Bridge
 import time
 
-b = Bridge('ip_of_your_bridge') # b = Bridge('ip_of_your_bridge')
+b = Bridge('') # b = Bridge('ip_of_your_bridge')
 
 # If the app is not registered and the button is not pressed, press the button and call connect() (this only needs to be run a single time)
 # b.connect()
+
+lights = [11, 12] # Use lights you'd prefer to use
+
 
 def convertColor(hexCode):
     R = int(hexCode[:2], 16)
@@ -25,14 +28,14 @@ def convertColor(hexCode):
 
     return [firstPos, secondPos]
 
+def flash(colour):
+    b.set_light(lights, {'on' : True, 'bri' : 254, 'xy' : convertColor(colour)})
+    time.sleep(0.7)
+    b.set_light(lights, 'on', False)
+
+flash('ff361f') # red
+flash('fefe00') # yellow
+flash('04ff02') # green
 
 
-b.set_light([11, 12],'on', True)
-b.set_light([11, 12], 'bri', 254)
 
-b.set_light([11, 12],'xy',convertColor('FF0000'))
-time.sleep(2)
-b.set_light([11, 12],'xy',convertColor('1FC600'))
-time.sleep(2)
-
-b.set_light([11, 12],'on', False)

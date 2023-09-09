@@ -1,5 +1,48 @@
 import yfinance as yf
 import time
+from phue import Bridge
+
+#### --- CODE FOR HUE --- ###
+
+def hueSetup():
+    global b
+    b = Bridge('192.168.1.109')  # b = Bridge('ip_of_your_bridge')
+
+    # If the app is not registered and the button is not pressed, press the button and call connect() (this only needs to be run a single time)
+    # b.connect()
+
+    global lights
+    lights = [11, 12]  # Use lights you want
+
+    return None
+
+# flashes light the given hex value
+def flash(colour):
+    b.set_light(lights, {'on' : True, 'bri' : 254, 'xy' : convertColor(colour)})
+    time.sleep(0.7)
+    b.set_light(lights, 'on', False)
+
+# allows easy use of rgb instead of xy from phue library
+def convertColor(hexCode):
+    R = int(hexCode[:2], 16)
+    G = int(hexCode[2:4], 16)
+    B = int(hexCode[4:6], 16)
+
+    total = R + G + B
+
+    if R == 0:
+        firstPos = 0
+    else:
+        firstPos = R / total
+
+    if G == 0:
+        secondPos = 0
+    else:
+        secondPos = G / total
+
+    return [firstPos, secondPos]
+
+### --- CODE FOR STOCK --- ###
 
 class Stock:
 
@@ -23,18 +66,32 @@ def volatility(stock):
     for i in range(1,10):
         stock.getPrice(stock.info['symbol']) # get latest price
         print("Price: ", stock.formattedPrice) # print latest price as string for price format
-        print("Change: ", priceChange(stock.prices), end = '\n\n') # print direction of change
+        priceChange(stock.prices) # run priceChange function
+
         time.sleep(2) # delay to fetch new price
 
 def priceChange(prices):
+    print("Change: ", end = '') # avoids repeating for all 3 if statements
+
+    # prints +/-/= for change and flashes corresponding colour
     if prices[-1] > prices[-2]:
-        return ("+")
+        print("+\n")
+        flash('04ff02')  # green
+
     elif prices[-1] < prices[-2]:
-        return ("-")
+        print("-\n")
+        flash('ff361f')  # red
+
     elif prices[-1] == prices[-2]:
-        return ("=")
+        print("=\n")
+        flash('fefe00') # yellow
+
+    return None
+
+### --- MAIN --- ###
 
 def main():
+    hueSetup()
     print("\nHue Volatility\n\n//////////////\n")
 
     # s1 being first stock used
