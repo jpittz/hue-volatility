@@ -71,27 +71,33 @@ def volatility(stock):
         time.sleep(2) # delay to fetch new price
 
 def priceSpike(prices):
-    spike = 5.0  #float
+    spike = 5.0  #float, threshold % to recognise a 'spike'
 
+    # calculates % change between two latest prices (will change later)
     percentageChange = prices[-1]/prices[-2]
 
+    # calculates % multiplier
     if percentageChange > 1:
-        percentageChange -= 1
+        percentageChange -= 1 # increase
     elif percentageChange < 1:
-        percentageChange = (1 - percentageChange) * -1
+        percentageChange = (1 - percentageChange) * -1 # decrease
     else:
         percentageChange = 0
 
+    # converts % multiplier to percentage
     percentageChange *= 100
 
+    # checks for spike up
     if percentageChange >= spike:
         print("+\n")
         flash('04ff02')  # green
 
+    # checks for spike down
     elif percentageChange <= (1 - spike):
         print("-\n")
         flash('ff361f')  # red
 
+    # outputs actual % change to 2dp
     print("Percentage Change: ", str("{:.2f}".format(percentageChange)), "%")
 
     print("Change: ", end='')  # avoids repeating for all 3 if statements
