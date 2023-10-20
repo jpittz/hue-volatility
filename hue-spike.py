@@ -4,6 +4,9 @@ from phue import Bridge
 
 #### --- CODE FOR HUE --- ###
 
+global sleepTime
+global spikeInterval
+
 def hueSetup():
     global b
     b = Bridge('')  # b = Bridge('ip_of_your_bridge')
@@ -63,18 +66,18 @@ def volatility(stock):
     print("\nLive Prices\n-----------\n")
     stock.getPrice(stock.info['symbol'])
 
-    for i in range(1,10):
+    for i in range(1,100): ### 100 is temporary value
         stock.getPrice(stock.info['symbol']) # get latest price
         print("Price: ", stock.formattedPrice) # print latest price as string for price format
         priceSpike(stock.prices) # run priceSpike function
 
-        time.sleep(2) # delay to fetch new price
+        time.sleep(sleepTime) # delay to fetch new price
 
 def priceSpike(prices):
     spike = 5.0  #float, threshold % to recognise a 'spike'
 
     # calculates % change between two latest prices (will change later)
-    percentageChange = prices[-1]/prices[-2]
+    percentageChange = prices[-1]/prices[(-1)*(spikeInterval+1)]
 
     # calculates % multiplier
     if percentageChange > 1:
@@ -117,6 +120,17 @@ def priceSpike(prices):
 
     return None
 
+def spikeSetup(stock):
+    # Note: interval set to 10 seconds for now
+    spikeInterval = 10
+    sleepTime = 2
+
+    for i in range(1, spikeInterval/sleepTime):
+        stock.getPrice(stock.info['symbol']) # get latest price
+        time.sleep(sleepTime) # delay to fetch new price
+
+    volatility(stock)
+
 ### --- MAIN --- ###
 
 def main():
@@ -130,6 +144,7 @@ def main():
     print("Ticker : ", s1.info['symbol'])
     print("Company : ", s1.info['shortName'], end = '\n\n')
 
-    volatility(s1)
+    #volatility(s1)
+    spikeSetup(s1)
 
 main()
